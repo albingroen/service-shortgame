@@ -1,6 +1,7 @@
 import prisma from "../lib/prisma";
 import { FastifyInstance } from "fastify";
 import { sendSMS } from "../lib/sms";
+import axios from "axios";
 
 export default async function routes(fastify: FastifyInstance) {
   fastify.post<{ Body: { phoneNumber: string } }>("/login", async (req) => {
@@ -15,7 +16,7 @@ export default async function routes(fastify: FastifyInstance) {
       message: `Your 4-digit confirmation code is: ${confirmation.code}`,
       to: req.body.phoneNumber,
       from: "AUTHMSG",
-      dryrun: "yes",
+      dryrun: "no",
     });
   });
 

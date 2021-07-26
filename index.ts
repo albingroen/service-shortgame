@@ -5,6 +5,7 @@ import jwt from "fastify-jwt";
 
 import authRoutes from "./routes/auth";
 import userRoutes from "./routes/user";
+import roundRoutes from "./routes/round";
 
 // Enable environment variables
 dotenv.config();
@@ -27,6 +28,7 @@ fastify.get("/", (_, res) => {
 
 fastify.register(authRoutes, { prefix: "/auth" });
 fastify.register(userRoutes, { prefix: "/user" });
+fastify.register(roundRoutes, { prefix: "/round" });
 
 // Start server
 fastify.listen(process.env.PORT || 5000, "0.0.0.0", function (err, address) {

@@ -13,9 +13,12 @@ generator client {
 model User {
   id          String @id @default(uuid())
   phoneNumber String @unique
+  handicap    Float  @default(36)
   email       String
   name        String
   avatar      String
+
+  rounds Round[]
 }
 
 model Confirmation {
@@ -23,4 +26,17 @@ model Confirmation {
   code        String
   confirmed   Boolean @default(false)
   phoneNumber String
+}
+
+model Round {
+  id        String @id @default(uuid())
+  bunker    Int
+  pitch     Int
+  chip      Int
+  shortPuts Int
+  longPuts  Int
+  total     Int
+
+  user   User   @relation(fields: [userId], references: [id])
+  userId String
 }
