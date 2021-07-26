@@ -31,7 +31,7 @@ export default async function routes(fastify: FastifyInstance) {
       });
 
       if (!confirmation) {
-        throw new Error("Not Found");
+        throw new Error("The confirmation code you entered was invalid");
       }
 
       const user = await prisma.user.findUnique({
