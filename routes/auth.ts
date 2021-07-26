@@ -1,7 +1,6 @@
 import prisma from "../lib/prisma";
 import { FastifyInstance } from "fastify";
 import { sendSMS } from "../lib/sms";
-import axios from "axios";
 
 export default async function routes(fastify: FastifyInstance) {
   fastify.post<{ Body: { phoneNumber: string } }>("/login", async (req) => {
@@ -49,7 +48,8 @@ export default async function routes(fastify: FastifyInstance) {
         });
 
         // Create JWT with user ID and return
-        return user;
+        const token = fastify.jwt.sign({ id: user.id });
+        return token;
       }
 
       const newUser = await prisma.user.create({
@@ -68,7 +68,8 @@ export default async function routes(fastify: FastifyInstance) {
         },
       });
 
-      return newUser;
+      const token = fastify.jwt.sign({ id: newUser.id });
+      return token;
     }
   );
 }
