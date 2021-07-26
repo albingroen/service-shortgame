@@ -2,6 +2,8 @@ import fy from "fastify";
 import dotenv from "dotenv";
 import cors from "fastify-cors";
 
+import authRoutes from "./routes/auth";
+
 // Enable environment variables
 dotenv.config();
 
@@ -15,6 +17,8 @@ fastify.register(cors);
 fastify.get("/", (_, res) => {
   res.send("Welcome to the server");
 });
+
+fastify.register(authRoutes, { prefix: "/auth" });
 
 // Start server
 fastify.listen(process.env.PORT || 5000, "0.0.0.0", function (err, address) {
