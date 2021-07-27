@@ -19,19 +19,15 @@ export default async function routes(fastify: FastifyInstance) {
     { preValidation: [verifyAuth] },
     async (req) => {
       const round = await prisma.round.create({
-        data: req.body,
+        data: {
+          ...req.body,
+          userId: (req.user as { id: string }).id,
+        },
       });
 
-      const { total } = round;
-      const newHandicap = total / 1.25;
-
       await prisma.user.update({
-        where: {
-          id: (req.user as { id: string }).id,
-        },
-        data: {
-          handicap: newHandicap,
-        },
+        where: { id: round.userId },
+        data: { handicap: round.total / 1.25 },
       });
 
       return round;
