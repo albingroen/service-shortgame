@@ -13,6 +13,20 @@ export default async function routes(fastify: FastifyInstance) {
     });
   });
 
+  // Get a round
+  fastify.get<{ Params: { id: string } }>(
+    "/:id",
+    { preValidation: [verifyAuth] },
+    async (req) => {
+      return prisma.round.findFirst({
+        where: {
+          userId: (req.user as { id: string }).id,
+          id: req.params.id,
+        },
+      });
+    }
+  );
+
   // Create round
   fastify.post<{ Body: Round }>(
     "/",
