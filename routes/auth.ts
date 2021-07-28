@@ -58,8 +58,6 @@ export default async function routes(fastify: FastifyInstance) {
           phoneNumber: confirmation.phoneNumber,
           avatar:
             "https://source.boringavatars.com/marble/120/Maria%20Mitchell?colors=264653,2a9d8f,e9c46a,f4a261,e76f51",
-          email: "john@doe.com",
-          name: "John Doe",
         },
       });
 

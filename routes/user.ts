@@ -15,12 +15,12 @@ export default async function routes(fastify: FastifyInstance) {
 
   // Update user
   fastify.put<{ Params: { id: string }; Body: User }>(
-    "/:id",
+    "/",
     { preValidation: [verifyAuth] },
     async (req) => {
       return prisma.user.update({
         where: {
-          id: req.params.id,
+          id: (req.user as { id: string }).id,
         },
         data: req.body,
       });

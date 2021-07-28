@@ -14,8 +14,8 @@ model User {
   id          String @id @default(uuid())
   phoneNumber String @unique
   handicap    Float  @default(36)
-  email       String
-  name        String
+  email       String?
+  name        String?
   avatar      String
 
   rounds Round[]
