@@ -7,6 +7,7 @@
   "scripts": {
     "dev": "concurrently 'tsc -w' 'nodemon .'",
     "format": "yarn prettier --write .",
+    "start": "node .",
     "build": "tsc"
   },
   "devDependencies": {
