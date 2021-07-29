@@ -10,6 +10,9 @@ export default async function routes(fastify: FastifyInstance) {
       where: {
         userId: (req.user as { id: string }).id,
       },
+      orderBy: {
+        createdAt: "desc",
+      },
     });
   });
 
