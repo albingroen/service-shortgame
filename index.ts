@@ -14,7 +14,15 @@ dotenv.config();
 const fastify = fy();
 
 // Enable cors
-fastify.register(cors);
+fastify.register(cors, {
+  origin: (origin, cb) => {
+    if (/localhost/.test(origin) || !origin) {
+      cb(null, true);
+      return;
+    }
+    cb(new Error("Not allowed"), false);
+  },
+});
 
 // Enable JWT
 fastify.register(jwt, {
