@@ -20,10 +20,12 @@
   "dependencies": {
     "@prisma/client": "^2.27.0",
     "axios": "^0.21.1",
+    "cloudinary": "^1.26.2",
     "dotenv": "^10.0.0",
     "fastify": "^3.19.2",
     "fastify-cors": "^6.0.2",
     "fastify-jwt": "^3.0.0",
+    "fastify-multipart": "^4.0.7",
     "fastify-plugin": "^3.0.0",
     "prisma": "^2.27.0",
     "querystring": "^0.2.1"

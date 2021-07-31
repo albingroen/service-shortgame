@@ -2,10 +2,12 @@ import fy from "fastify";
 import dotenv from "dotenv";
 import cors from "fastify-cors";
 import jwt from "fastify-jwt";
+import mp from "fastify-multipart";
 
 import authRoutes from "./routes/auth";
 import userRoutes from "./routes/user";
 import roundRoutes from "./routes/round";
+import imageRoutes from "./routes/image";
 
 // Enable environment variables
 dotenv.config();
@@ -29,6 +31,9 @@ fastify.register(jwt, {
   secret: process.env.JWT_SECRET as string,
 });
 
+// Enable multipart data
+fastify.register(mp);
+
 // Root route
 fastify.get("/", (_, res) => {
   res.send("Welcome to the server");
@@ -37,6 +42,7 @@ fastify.get("/", (_, res) => {
 fastify.register(authRoutes, { prefix: "/auth" });
 fastify.register(userRoutes, { prefix: "/user" });
 fastify.register(roundRoutes, { prefix: "/round" });
+fastify.register(imageRoutes, { prefix: "/upload" });
 
 // Start server
 fastify.listen(process.env.PORT || 5000, "0.0.0.0", function (err, address) {
