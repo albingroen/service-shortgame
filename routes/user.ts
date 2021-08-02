@@ -26,4 +26,18 @@ export default async function routes(fastify: FastifyInstance) {
       });
     }
   );
+
+  // Get leaderboard
+  fastify.get("/leaderboard", async () => {
+    return prisma.user.findMany({
+      orderBy: {
+        handicap: "asc",
+      },
+      select: {
+        handicap: true,
+        avatar: true,
+        name: true,
+      },
+    });
+  });
 }
