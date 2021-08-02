@@ -50,4 +50,28 @@ export default async function routes(fastify: FastifyInstance) {
       return round;
     }
   );
+
+  // Delete round
+  fastify.delete<{ Params: { id: string } }>(
+    "/:id",
+    { preValidation: [verifyAuth] },
+    async (req) => {
+      const round = await prisma.round.findFirst({
+        where: {
+          id: req.params.id,
+          userId: (req.user as { id: string }).id,
+        },
+      });
+
+      if (!round) {
+        throw new Error("Round not found");
+      }
+
+      return prisma.round.delete({
+        where: {
+          id: req.params.id,
+        },
+      });
+    }
+  );
 }
