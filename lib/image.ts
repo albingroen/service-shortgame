@@ -8,7 +8,9 @@ cloudinary.config({
 
 export const uploadImage = async (image: any) => {
   return new Promise((resolve, reject) => {
-    cloudinary.uploader.upload_stream({}, cloudinaryDone).end(image);
+    cloudinary.uploader
+      .upload_stream({ transformation: { width: 100 } }, cloudinaryDone)
+      .end(image);
 
     function cloudinaryDone(error: any, result: any) {
       if (error) {
