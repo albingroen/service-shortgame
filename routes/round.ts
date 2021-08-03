@@ -1,6 +1,7 @@
 import { Round } from "@prisma/client";
 import { FastifyInstance } from "fastify";
 import { verifyAuth } from "../lib/auth";
+import { getNewHandicap } from "../lib/handicap";
 import prisma from "../lib/prisma";
 
 export default async function routes(fastify: FastifyInstance) {
@@ -35,16 +36,28 @@ export default async function routes(fastify: FastifyInstance) {
     "/",
     { preValidation: [verifyAuth] },
     async (req) => {
-      const round = await prisma.round.create({
-        data: {
-          ...req.body,
-          userId: (req.user as { id: string }).id,
+      const user = await prisma.user.findUnique({
+        where: {
+          id: (req.user as { id: string }).id,
         },
       });
 
+      if (!user) {
+        throw new Error("User not found");
+      }
+
+      const round = await prisma.round.create({
+        data: {
+          ...req.body,
+          userId: user.id,
+        },
+      });
+
+      const newHandicap = getNewHandicap(user.handicap, req.body.total);
+
       await prisma.user.update({
         where: { id: round.userId },
-        data: { handicap: round.total / 1.25 },
+        data: { handicap: newHandicap },
       });
 
       return round;

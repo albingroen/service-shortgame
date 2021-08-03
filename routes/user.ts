@@ -37,6 +37,7 @@ export default async function routes(fastify: FastifyInstance) {
         handicap: true,
         avatar: true,
         name: true,
+        id: true
       },
     });
   });
