@@ -26,55 +26,55 @@ export default async function routes(fastify: FastifyInstance) {
     });
   });
 
-  fastify.post<{ Body: { code: string; phoneNumber: string } }>(
-    "/confirm",
-    async (req) => {
-      const confirmation = await prisma.confirmation.findFirst({
-        where: {
-          phoneNumber: req.body.phoneNumber,
-          code: req.body.code,
-          confirmed: false,
-        },
-      });
+  fastify.post<{
+    Body: { code: string; phoneNumber: string; handicap?: number };
+  }>("/confirm", async (req) => {
+    const confirmation = await prisma.confirmation.findFirst({
+      where: {
+        phoneNumber: req.body.phoneNumber,
+        code: req.body.code,
+        confirmed: false,
+      },
+    });
 
-      if (!confirmation) {
-        throw new Error("The confirmation code you entered was invalid");
-      }
+    if (!confirmation) {
+      throw new Error("The confirmation code you entered was invalid");
+    }
 
-      const user = await prisma.user.findUnique({
-        where: {
-          phoneNumber: confirmation.phoneNumber,
-        },
-      });
+    const user = await prisma.user.findUnique({
+      where: {
+        phoneNumber: confirmation.phoneNumber,
+      },
+    });
 
-      if (user) {
-        await prisma.confirmation.delete({
-          where: {
-            id: confirmation.id,
-          },
-        });
-
-        // Create JWT with user ID and return
-        const token = fastify.jwt.sign({ id: user.id });
-        return token;
-      }
-
-      const newUser = await prisma.user.create({
-        data: {
-          phoneNumber: confirmation.phoneNumber,
-          avatar:
-            "https://source.boringavatars.com/marble/120/Maria%20Mitchell?colors=264653,2a9d8f,e9c46a,f4a261,e76f51",
-        },
-      });
-
+    if (user) {
       await prisma.confirmation.delete({
         where: {
           id: confirmation.id,
         },
       });
 
-      const token = fastify.jwt.sign({ id: newUser.id });
+      // Create JWT with user ID and return
+      const token = fastify.jwt.sign({ id: user.id });
       return token;
     }
-  );
+
+    const newUser = await prisma.user.create({
+      data: {
+        phoneNumber: confirmation.phoneNumber,
+        handicap: req.body.handicap || 36,
+        avatar:
+          "https://source.boringavatars.com/marble/120/Maria%20Mitchell?colors=264653,2a9d8f,e9c46a,f4a261,e76f51",
+      },
+    });
+
+    await prisma.confirmation.delete({
+      where: {
+        id: confirmation.id,
+      },
+    });
+
+    const token = fastify.jwt.sign({ id: newUser.id });
+    return token;
+  });
 }
