@@ -1,7 +1,7 @@
 import prisma from "../lib/prisma";
 import { FastifyInstance } from "fastify";
 import { sendSMS } from "../lib/sms";
-import axios from "axios";
+import { APPLE_PHONE_NUMBER } from "../lib/utils";
 
 export default async function routes(fastify: FastifyInstance) {
   fastify.post<{ Body: { phoneNumber: string } }>("/login", async (req) => {
@@ -11,6 +11,12 @@ export default async function routes(fastify: FastifyInstance) {
         phoneNumber: req.body.phoneNumber,
       },
     });
+
+    if (req.body.phoneNumber === APPLE_PHONE_NUMBER) {
+      return {
+        confirmation,
+      };
+    }
 
     return sendSMS({
       message: `Your 4-digit confirmation code is: ${confirmation.code}`,

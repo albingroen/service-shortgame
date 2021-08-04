@@ -2,6 +2,7 @@ import { User } from "@prisma/client";
 import { FastifyInstance } from "fastify";
 import { verifyAuth } from "../lib/auth";
 import prisma from "../lib/prisma";
+import { APPLE_PHONE_NUMBER } from "../lib/utils";
 
 export default async function routes(fastify: FastifyInstance) {
   // Get user
@@ -30,6 +31,11 @@ export default async function routes(fastify: FastifyInstance) {
   // Get leaderboard
   fastify.get("/leaderboard", async () => {
     return prisma.user.findMany({
+      where: {
+        phoneNumber: {
+          not: APPLE_PHONE_NUMBER,
+        },
+      },
       orderBy: {
         handicap: "asc",
       },
@@ -37,7 +43,7 @@ export default async function routes(fastify: FastifyInstance) {
         handicap: true,
         avatar: true,
         name: true,
-        id: true
+        id: true,
       },
     });
   });
