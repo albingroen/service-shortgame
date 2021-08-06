@@ -64,7 +64,7 @@ export default async function routes(fastify: FastifyInstance) {
         phoneNumber: confirmation.phoneNumber,
         handicap: req.body.handicap || 36,
         avatar:
-          "https://source.boringavatars.com/marble/120/Maria%20Mitchell?colors=264653,2a9d8f,e9c46a,f4a261,e76f51",
+          "https://res.cloudinary.com/albin-groen/image/upload/f_auto,q_auto/v1628281090/avatar-placeholder_nqf0nu.png",
       },
     });
 
