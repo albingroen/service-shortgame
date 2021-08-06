@@ -64,7 +64,7 @@ export default async function routes(fastify: FastifyInstance) {
         phoneNumber: confirmation.phoneNumber,
         handicap: req.body.handicap || 36,
         avatar:
-          "https://res.cloudinary.com/albin-groen/image/upload/f_auto,q_auto/v1628281090/avatar-placeholder_nqf0nu.png",
+          "https://res.cloudinary.com/albin-groen/image/upload/f_auto,q_auto/v1628282079/placeholder-avatar_qq6oqj.png",
       },
     });
 
