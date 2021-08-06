@@ -14,6 +14,26 @@ export default async function routes(fastify: FastifyInstance) {
     });
   });
 
+  // Get public user
+  fastify.get<{ Params: { id: string } }>(
+    "/public/:id",
+    { preValidation: [verifyAuth] },
+    async (req) => {
+      return prisma.user.findUnique({
+        where: {
+          id: req.params.id,
+        },
+        select: {
+          handicap: true,
+          avatar: true,
+          rounds: true,
+          name: true,
+          id: true,
+        },
+      });
+    }
+  );
+
   // Update user
   fastify.put<{ Params: { id: string }; Body: User }>(
     "/",

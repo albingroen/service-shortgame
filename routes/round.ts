@@ -23,10 +23,7 @@ export default async function routes(fastify: FastifyInstance) {
     { preValidation: [verifyAuth] },
     async (req) => {
       return prisma.round.findFirst({
-        where: {
-          userId: (req.user as { id: string }).id,
-          id: req.params.id,
-        },
+        where: { id: req.params.id },
       });
     }
   );
@@ -77,7 +74,7 @@ export default async function routes(fastify: FastifyInstance) {
       });
 
       if (!round) {
-        throw new Error("Round not found");
+        throw new Error("Någonting gick fel");
       }
 
       return prisma.round.delete({
