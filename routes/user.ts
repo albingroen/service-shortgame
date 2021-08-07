@@ -1,26 +1,15 @@
 import { User } from "@prisma/client";
 import { FastifyInstance } from "fastify";
+import { omit } from "lodash";
 import { verifyAuth } from "../lib/auth";
 import prisma from "../lib/prisma";
+import { getUser, getUserAverages } from "../lib/user";
 import { APPLE_PHONE_NUMBER } from "../lib/utils";
 
 export default async function routes(fastify: FastifyInstance) {
   // Get user
   fastify.get("/", { preValidation: [verifyAuth] }, async (req) => {
-    return prisma.user.findUnique({
-      where: {
-        id: (req.user as { id: string }).id,
-      },
-      include: {
-        rounds: {
-          select: {
-            createdAt: true,
-            total: true,
-            id: true,
-          },
-        },
-      },
-    });
+    return getUser((req.user as { id: string }).id, true);
   });
 
   // Get public user
@@ -28,24 +17,7 @@ export default async function routes(fastify: FastifyInstance) {
     "/public/:id",
     { preValidation: [verifyAuth] },
     async (req) => {
-      return prisma.user.findUnique({
-        where: {
-          id: req.params.id,
-        },
-        select: {
-          handicap: true,
-          avatar: true,
-          rounds: {
-            select: {
-              createdAt: true,
-              total: true,
-              id: true,
-            },
-          },
-          name: true,
-          id: true,
-        },
-      });
+      return getUser(req.params.id);
     }
   );
 
@@ -65,7 +37,7 @@ export default async function routes(fastify: FastifyInstance) {
 
   // Get leaderboard
   fastify.get("/leaderboard", async () => {
-    return prisma.user.findMany({
+    const users = await prisma.user.findMany({
       where: {
         phoneNumber: {
           not: APPLE_PHONE_NUMBER,
@@ -76,10 +48,16 @@ export default async function routes(fastify: FastifyInstance) {
       },
       select: {
         handicap: true,
+        rounds: true,
         avatar: true,
         name: true,
         id: true,
       },
     });
+
+    return users.map((user) => ({
+      ...omit(user, ["rounds"]),
+      ...getUserAverages(user),
+    }));
   });
 }
