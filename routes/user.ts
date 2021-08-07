@@ -11,6 +11,15 @@ export default async function routes(fastify: FastifyInstance) {
       where: {
         id: (req.user as { id: string }).id,
       },
+      include: {
+        rounds: {
+          select: {
+            createdAt: true,
+            total: true,
+            id: true,
+          },
+        },
+      },
     });
   });
 
@@ -26,7 +35,13 @@ export default async function routes(fastify: FastifyInstance) {
         select: {
           handicap: true,
           avatar: true,
-          rounds: true,
+          rounds: {
+            select: {
+              createdAt: true,
+              total: true,
+              id: true,
+            },
+          },
           name: true,
           id: true,
         },
