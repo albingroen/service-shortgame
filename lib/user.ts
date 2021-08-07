@@ -28,18 +28,21 @@ export const getUserAverages = (user: { [key: string]: any }) => {
 };
 
 export const getUser = async (id: string, fullProfile?: boolean) => {
-  const user = await prisma.user.findUnique({
-    where: { id },
-    select: fullProfile
-      ? undefined
-      : {
+  const user = fullProfile
+    ? await prisma.user.findUnique({
+        where: { id },
+        include: { rounds: true },
+      })
+    : await prisma.user.findUnique({
+        where: { id },
+        select: {
           handicap: true,
           avatar: true,
           rounds: true,
           name: true,
           id: true,
         },
-  });
+      });
 
   if (!user) {
     throw new Error("Användaren hittades inte");
