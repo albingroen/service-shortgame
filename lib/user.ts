@@ -1,3 +1,4 @@
+import axios from "axios";
 import { sumBy } from "lodash";
 import prisma from "./prisma";
 
@@ -52,4 +53,18 @@ export const getUser = async (id: string, fullProfile?: boolean) => {
     ...user,
     ...getUserAverages(user),
   };
+};
+
+export const getUserDetails = async (phoneNumber: string) => {
+  return axios
+    .get(
+      `https://api.checkbiz.se/api/v1/subscriber?Phonenumber=${phoneNumber}`,
+      {
+        headers: {
+          Authorization: process.env.CHECKBIZ_API_TOKEN,
+          Package: "Subscriber",
+        },
+      }
+    )
+    .then((res) => res.data);
 };

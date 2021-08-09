@@ -1,15 +1,15 @@
 import https from "https";
 import qs from "querystring";
 
-const username = process.env.ELKS_USERNAME;
-const password = process.env.ELKS_PASSWORD;
-
 export async function sendSMS(postFields: {
   message: string;
   dryrun?: string;
   from: string;
   to: string;
 }) {
+  const username = process.env.ELKS_USERNAME;
+  const password = process.env.ELKS_PASSWORD;
+
   const key = Buffer.from(username + ":" + password).toString("base64");
   const postData = qs.stringify(postFields);
 
