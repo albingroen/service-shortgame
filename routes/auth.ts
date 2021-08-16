@@ -71,9 +71,10 @@ export default async function routes(fastify: FastifyInstance) {
         phoneNumber: confirmation.phoneNumber,
         handicap: req.body.handicap || 36,
         name:
-          userDetails.personBasicResult.givenName &&
-          userDetails.personBasicResult.surName &&
-          `${userDetails.personBasicResult.givenName} ${userDetails.personBasicResult.surName}`.trim(),
+          (userDetails?.personBasicResult?.givenName &&
+            userDetails?.personBasicResult?.surName &&
+            `${userDetails.personBasicResult.givenName} ${userDetails.personBasicResult.surName}`.trim()) ??
+          undefined,
         avatar:
           "https://res.cloudinary.com/albin-groen/image/upload/f_auto,q_auto/v1628282079/placeholder-avatar_qq6oqj.png",
       },
