@@ -39,7 +39,11 @@ export const getUser = async (id: string, fullProfile?: boolean) => {
         select: {
           handicap: true,
           avatar: true,
-          rounds: true,
+          rounds: {
+            orderBy: {
+              createdAt: "desc",
+            },
+          },
           name: true,
           id: true,
         },
