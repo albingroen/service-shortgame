@@ -2,7 +2,6 @@ import prisma from "../lib/prisma";
 import { FastifyInstance } from "fastify";
 import { sendSMS } from "../lib/sms";
 import { APPLE_PHONE_NUMBER } from "../lib/utils";
-import { getUserDetails } from "../lib/user";
 
 export default async function routes(fastify: FastifyInstance) {
   fastify.post<{ Body: { phoneNumber: string } }>("/login", async (req) => {
@@ -60,21 +59,10 @@ export default async function routes(fastify: FastifyInstance) {
       return token;
     }
 
-    const userDetails = await getUserDetails(
-      confirmation.phoneNumber.startsWith("+46")
-        ? `0${confirmation.phoneNumber.substr(3)}`
-        : confirmation.phoneNumber
-    );
-
     const newUser = await prisma.user.create({
       data: {
         phoneNumber: confirmation.phoneNumber,
         handicap: req.body.handicap || 36,
-        name:
-          (userDetails?.personBasicResult?.givenName &&
-            userDetails?.personBasicResult?.surName &&
-            `${userDetails.personBasicResult.givenName} ${userDetails.personBasicResult.surName}`.trim()) ??
-          undefined,
         avatar:
           "https://res.cloudinary.com/albin-groen/image/upload/f_auto,q_auto/v1628282079/placeholder-avatar_qq6oqj.png",
       },
