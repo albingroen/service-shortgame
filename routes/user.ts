@@ -4,7 +4,7 @@ import { omit } from "lodash";
 import { verifyAuth } from "../lib/auth";
 import prisma from "../lib/prisma";
 import { getUser, getUserAverages } from "../lib/user";
-import { APPLE_PHONE_NUMBER } from "../lib/utils";
+import { amandaSweden, APPLE_PHONE_NUMBER } from "../lib/utils";
 
 export default async function routes(fastify: FastifyInstance) {
   // Get user
@@ -41,6 +41,9 @@ export default async function routes(fastify: FastifyInstance) {
       where: {
         phoneNumber: {
           not: APPLE_PHONE_NUMBER,
+        },
+        id: {
+          not: amandaSweden,
         },
       },
       orderBy: {

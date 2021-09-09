@@ -3,6 +3,7 @@ import { FastifyInstance } from "fastify";
 import { verifyAuth } from "../lib/auth";
 import { getNewHandicap } from "../lib/handicap";
 import prisma from "../lib/prisma";
+import { amandaSweden, amandaUSA } from "../lib/utils";
 
 export default async function routes(fastify: FastifyInstance) {
   // Get all rounds
@@ -43,21 +44,51 @@ export default async function routes(fastify: FastifyInstance) {
         throw new Error("User not found");
       }
 
-      const round = await prisma.round.create({
-        data: {
-          ...req.body,
-          userId: user.id,
-        },
-      });
+      if ([amandaSweden, amandaUSA].includes(user.id)) {
+        const round1 = await prisma.round.create({
+          data: {
+            ...req.body,
+            userId: amandaSweden,
+          },
+        });
 
-      const newHandicap = getNewHandicap(user.handicap, req.body.total);
+        const round2 = await prisma.round.create({
+          data: {
+            ...req.body,
+            userId: amandaUSA,
+          },
+        });
 
-      await prisma.user.update({
-        where: { id: round.userId },
-        data: { handicap: newHandicap },
-      });
+        const newHandicap = getNewHandicap(user.handicap, req.body.total);
 
-      return round;
+        await prisma.user.update({
+          where: { id: amandaSweden },
+          data: { handicap: newHandicap },
+        });
+
+        await prisma.user.update({
+          where: { id: amandaUSA },
+          data: { handicap: newHandicap },
+        });
+
+        return user.id === amandaSweden ? round1 : round2;
+      } else {
+        const round = await prisma.round.create({
+          data: {
+            ...req.body,
+            userId: user.id,
+          },
+        });
+
+        const newHandicap = getNewHandicap(user.handicap, req.body.total);
+
+        await prisma.user.update({
+          where: { id: round.userId },
+          data: { handicap: newHandicap },
+        });
+
+        return round;
+      }
     }
   );
 
